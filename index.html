@@ -6,6 +6,10 @@
   <title>MEMOBANK OFFLINE 2026</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -47,7 +51,6 @@
       width: 100%;
       padding: 14px;
       font-size: 16px;
-      box-sizing: border-box;
       border: 1px solid #d1d5db;
       border-radius: 8px;
     }
@@ -70,8 +73,27 @@
     }
 
     .memo-card p {
-      margin-bottom: 0;
+      margin-bottom: 10px;
       color: #4b5563;
+    }
+
+    .memo-card a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      background: #163b65;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+    }
+
+    .memo-card a:hover {
+      background: #245789;
+    }
+
+    #status {
+      text-align: center;
+      margin-top: 20px;
     }
 
     footer {
@@ -93,13 +115,18 @@
   <div class="container">
 
     <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Search memorandum number or title..." oninput="searchMemos()">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search memorandum number or title..."
+        oninput="searchMemos()"
+      >
     </div>
 
+    <div id="status">Loading memoranda...</div>
+
     <div class="memo-list">
-
-    <div id="memoList"></div>
-
+      <div id="memoList"></div>
     </div>
 
   </div>
@@ -109,52 +136,121 @@
   </footer>
 
   <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbwVip6GcKobC-kjB20Mwg8ObJlg4lLDCoGHClP20sdc1zb6lYa9ezId4RGYr-V7yVFh/exec";
 
-let memos = [];
+    const API_URL = "https://script.google.com/macros/s/AKfycbwVip6GcKobC-kjB20Mgw8ObJlg4lLDCoGHClP20sdc1zb6lYa9ezId4RGYr-V7yVFh/exec";
 
-async function loadMemos() {
-    try {
+    let memos = [];
+
+    async function loadMemos() {
+
+      try {
+
         const response = await fetch(API_URL + "?t=" + Date.now());
-        memos = await response.json();
+
+        if (!response.ok) {
+          throw new Error("Failed to connect to the server.");
+        }
+
+        const data = await response.json();
+
+        memos = Array.isArray(data) ? data : [];
+
+        document.getElementById("status").innerText =
+          memos.length > 0 ? "" : "No memoranda found.";
+
         displayMemos(memos);
-    } catch (error) {
-        document.getElementById("memoList").innerHTML =
-            "<p>Unable to load memoranda. Please check your connection.</p>";
+
+      } catch (error) {
+
+        document.getElementById("status").innerText =
+          "Unable to load memoranda. Please check your connection.";
+
         console.error(error);
+
+      }
+
     }
-}
-function displayMemos(list) {
-  const memoList = document.getElementById("memoList");
 
-  memoList.innerHTML = "";
+    function displayMemos(list) {
 
-  list.forEach(memo => {
-    const card = document.createElement("div");
-    card.className = "memo-card";
+      const memoList = document.getElementById("memoList");
 
-    card.innerHTML = `
-      <h3>${memo.memoNumber}</h3>
-      <p>${memo.title || "No title provided"}</p>
-      <p>${memo.year || ""}</p>
-      <a href="https://drive.google.com/file/d/${memo.fileId}/view"
-         target="_blank">Open Memorandum PDF</a>
-    `;
+      memoList.innerHTML = "";
 
-    memoList.appendChild(card);
-  });
-function searchMemos() {
-  const query = document.getElementById("searchInput").value.toLowerCase();
+      if (!list.length) {
+        memoList.innerHTML = "<p>No matching memoranda found.</p>";
+        return;
+      }
 
-  const filtered = memos.filter(memo =>
-    memo.memoNumber.toLowerCase().includes(query) ||
-    (memo.title || "").toLowerCase().includes(query)
-  );
+      list.forEach(memo => {
 
-  displayMemos(filtered);
-}
-  window.onload = loadMemos;
-</script>
-  
+        const card = document.createElement("div");
+
+        card.className = "memo-card";
+
+        const heading = document.createElement("h3");
+        heading.textContent = memo.memoNumber || "No memorandum number";
+
+        const title = document.createElement("p");
+        title.textContent = memo.title || "No title provided";
+
+        const year = document.createElement("p");
+        year.textContent = memo.year || "";
+
+        card.appendChild(heading);
+        card.appendChild(title);
+        card.appendChild(year);
+
+        if (memo.fileId) {
+
+          const link = document.createElement("a");
+
+          link.href =
+            "https://drive.google.com/file/d/" +
+            encodeURIComponent(memo.fileId) +
+            "/view";
+
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = "Open Memorandum PDF";
+
+          card.appendChild(link);
+
+        }
+
+        memoList.appendChild(card);
+
+      });
+
+    }
+
+    function searchMemos() {
+
+      const query = document
+        .getElementById("searchInput")
+        .value
+        .toLowerCase()
+        .trim();
+
+      const filtered = memos.filter(memo => {
+
+        const memoNumber = String(memo.memoNumber || "").toLowerCase();
+        const title = String(memo.title || "").toLowerCase();
+        const year = String(memo.year || "").toLowerCase();
+
+        return memoNumber.includes(query) ||
+               title.includes(query) ||
+               year.includes(query);
+
+      });
+
+      displayMemos(filtered);
+
+    }
+
+    window.onload = loadMemos;
+
+  </script>
+
 </body>
 </html>
