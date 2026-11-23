@@ -4,11 +4,112 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MEMOBANK OFFLINE 2026</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f6f9;
+      color: #1f2937;
+    }
+
+    header {
+      background: #163b65;
+      color: white;
+      padding: 30px 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    header p {
+      margin-top: 10px;
+      font-size: 16px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    .search-box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      box-sizing: border-box;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+    }
+
+    .memo-list {
+      margin-top: 25px;
+    }
+
+    .memo-card {
+      background: white;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .memo-card h3 {
+      color: #163b65;
+      margin-top: 0;
+    }
+
+    .memo-card p {
+      margin-bottom: 0;
+      color: #4b5563;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #6b7280;
+      font-size: 13px;
+    }
+  </style>
 </head>
+
 <body>
 
-  <h1>MEMOBANK OFFLINE 2026</h1>
-  <p>School Memorandum Repository</p>
+  <header>
+    <h1>MEMOBANK OFFLINE 2026</h1>
+    <p>School Memorandum Repository</p>
+  </header>
+
+  <div class="container">
+
+    <div class="search-box">
+      <input type="text" placeholder="Search memorandum number or title...">
+    </div>
+
+    <div class="memo-list">
+
+      <div class="memo-card">
+        <h3>Memorandum List</h3>
+        <p>Your school memoranda will appear here.</p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <footer>
+    MEMOBANK OFFLINE 2026 | School Memorandum Repository
+  </footer>
 
 </body>
 </html>
