@@ -114,14 +114,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwVip6GcKobC-kjB20Mwg8O
 let memos = [];
 
 async function loadMemos() {
-  try {
-    const response = await fetch(API_URL);
-    memos = await response.json();
-    displayMemos(memos);
-  } catch (error) {
-    document.getElementById("memoList").innerHTML =
-      "<p>Unable to load memoranda.</p>";
-  }
+    try {
+        const response = await fetch(API_URL + "?t=" + Date.now());
+        memos = await response.json();
+        displayMemos(memos);
+    } catch (error) {
+        document.getElementById("memoList").innerHTML =
+            "<p>Unable to load memoranda. Please check your connection.</p>";
+        console.error(error);
+    }
+}
 function displayMemos(list) {
   const memoList = document.getElementById("memoList");
 
