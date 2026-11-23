@@ -108,6 +108,50 @@
     MEMOBANK OFFLINE 2026 | School Memorandum Repository
   </footer>
 
+  <script>
+const API_URL = "https://script.google.com/macros/s/AKfycbwVip6GcKobC-kjB20Mwg8ObJlg4lLDCoGHClP20sdc1zb6lYa9ezId4RGYr-V7yVFh/exec";
+
+let memos = [];
+
+async function loadMemos() {
+  try {
+    const response = await fetch(API_URL);
+    memos = await response.json();
+    displayMemos(memos);
+  } catch (error) {
+    document.getElementById("memoList").innerHTML =
+      "<p>Unable to load memoranda.</p>";
+  }
+function displayMemos(list) {
+  const memoList = document.getElementById("memoList");
+
+  memoList.innerHTML = "";
+
+  list.forEach(memo => {
+    const card = document.createElement("div");
+    card.className = "memo-card";
+
+    card.innerHTML = `
+      <h3>${memo.memoNumber}</h3>
+      <p>${memo.title || "No title provided"}</p>
+      <p>${memo.year || ""}</p>
+      <a href="https://drive.google.com/file/d/${memo.fileId}/view"
+         target="_blank">Open Memorandum PDF</a>
+    `;
+
+    memoList.appendChild(card);
+  });
+function searchMemos() {
+  const query = document.getElementById("searchInput").value.toLowerCase();
+
+  const filtered = memos.filter(memo =>
+    memo.memoNumber.toLowerCase().includes(query) ||
+    (memo.title || "").toLowerCase().includes(query)
+  );
+
+  displayMemos(filtered);
+}
+</script>
   
 </body>
 </html>
